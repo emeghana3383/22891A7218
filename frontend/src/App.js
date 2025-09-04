@@ -1,42 +1,83 @@
+
 import React, { useState } from "react";
-import UrlShortener from "./components/UrlShortener";
-import Stats from "./components/Stats";
+import { Container, Typography, TextField, Button, Card, CardContent, List, ListItem, ListItemText, AppBar, Toolbar } from "@mui/material";
 
 function App() {
-  const [urls, setUrls] = useState([]);
+  const [url, setUrl] = useState("");
+  const [shortUrls, setShortUrls] = useState([]);
 
-  // When user enters one URL, generate 5 short URLs
-  const addUrl = (url) => {
-    const newUrls = Array.from({ length: 5 }, () => {
-      const shortcode = Math.random().toString(36).substring(2, 7);
-      return {
-        originalUrl: url,
-        shortUrl: `https://short.ly/${shortcode}`,
-        shortcode,
-        clicks: 0,
-        validity: "Valid",
-      };
-    });
 
-    // Add them to the table
-    setUrls([...newUrls, ...urls]);
+  const shortenUrl = (originalUrl) => {
+    let newUrls = [];
+    for (let i = 0; i < 5; i++) {
+      newUrls.push(`https://short.ly/${Math.random().toString(36).substring(2, 8)}`);
+    }
+    setShortUrls(newUrls);
   };
 
-  const incrementClick = (shortcode) => {
-    setUrls(
-      urls.map((u) =>
-        u.shortcode === shortcode ? { ...u, clicks: u.clicks + 1 } : u
-      )
-    );
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (url.trim() === "") return;
+    shortenUrl(url);
+    setUrl("");
   };
 
   return (
     <div>
-      <h1>URL Shortener</h1>
-      <UrlShortener onAdd={addUrl} />
-      <Stats urls={urls} onClick={incrementClick} />
+      {/* Navbar */}
+      <AppBar position="static" sx={{ bgcolor: "#1976d2" }}>
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            🚀 Smart URL Shortener
+          </Typography>
+        </Toolbar>
+      </AppBar>
+
+      {/* Main Content */}
+      <Container maxWidth="sm" sx={{ mt: 5 }}>
+        <Card sx={{ p: 3, boxShadow: 5, borderRadius: 3 }}>
+          <CardContent>
+            <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold", textAlign: "center" }}>
+              Paste your long URL below 👇
+            </Typography>
+
+            <form onSubmit={handleSubmit} style={{ textAlign: "center" }}>
+              <TextField
+                label="Enter URL"
+                variant="outlined"
+                fullWidth
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                sx={{ mb: 2 }}
+              />
+              <Button variant="contained" color="primary" type="submit" sx={{ px: 4, py: 1.2 }}>
+                Shorten
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        {/* Display Shortened URLs */}
+        {shortUrls.length > 0 && (
+          <Card sx={{ mt: 4, p: 2, boxShadow: 3, borderRadius: 3 }}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold" }}>
+                🔗 Your Shortened URLs:
+              </Typography>
+              <List>
+                {shortUrls.map((s, index) => (
+                  <ListItem key={index} sx={{ bgcolor: "#f5f5f5", borderRadius: 2, mb: 1 }}>
+                    <ListItemText primary={s} />
+                  </ListItem>
+                ))}
+              </List>
+            </CardContent>
+          </Card>
+        )}
+      </Container>
     </div>
   );
 }
 
 export default App;
+
