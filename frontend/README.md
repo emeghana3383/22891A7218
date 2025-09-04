@@ -42,3 +42,13 @@ The project also has a **Stats page** to display basic usage metrics.
     npm start
 4. Open browser:
     http://localhost:3000
+## 📸 Example Screenshots
+
+### Home Page
+![Home Page](screenshots/home.png)
+
+### url Page
+![url Page](screenshots/url.png)
+
+### output Page
+![url Page](screenshots/output.png)
